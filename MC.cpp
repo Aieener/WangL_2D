@@ -423,7 +423,7 @@ array<double,10000>  MC::MCRUN(int o)
 		
 	srand(time(NULL));
 	long int i = 0;
-	Histogram histotalv(0,0.8*512,4);
+	Histogram histotalv(0,0.8*512,4); // take 80% of the full range.
 	Histogram histotalh(0,0.8*512,4);
 
 	Histogram hisv(0, 0.8*512, 4);
@@ -768,7 +768,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	deque<HR> R;
-	MC m(1E8L,8,64,64,300);
+	MC m(1E8L,8,64,64,14.02555);
 	wf = m.MCRUN(0);
 	R= m.getRodlist();
 	m.plot(R);
