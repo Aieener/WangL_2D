@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <time.h>
-#include <deque>
+#include <vector>
 using namespace std;
 
 
@@ -34,7 +34,7 @@ MC::MC(long int ST, int LEN,int C, int R, double Z)
     nh=nv=dh=dv=ah=av=0;
 }
 
-deque<HR> MC::getRodlist() 
+vector<HR> MC::getRodlist() 
 {
     return Rodlist;
 }
@@ -76,7 +76,7 @@ double MC::getNv() const
     return nv;
 }
 
-void MC::setRodlist(std::deque<HR> RodL)
+void MC::setRodlist(std::vector<HR> RodL)
 {
     Rodlist = RodL;
 }
@@ -286,7 +286,7 @@ void MC::Del(Cells &s,double &prob,double &probdv, double &probdh,double &size)
                         // update the new config of cells
                         s.getSquare(x,y + i).setStatus(0);
                     }
-                    // remove the target rod from the deque Rodlist;
+                    // remove the target rod from the vector Rodlist;
                     Rodlist.erase(Rodlist.begin() + indx);
                     nv--;// substract the # of ver rod;
                     dv++;
@@ -333,7 +333,7 @@ void MC::Del(Cells &s,double &prob,double &probdv, double &probdh,double &size)
                         // update the new config of cells
                         s.getSquare(x+i,y).setStatus(0);
                     }
-                    // remove the target rod from the deque Rodlist;
+                    // remove the target rod from the vector Rodlist;
                     Rodlist.erase(Rodlist.begin() + indx);
                     nh--;// substract the # of hor rod;
                     dh++;
@@ -418,7 +418,7 @@ void MC::MCRUN()
         probah = min(1.0,aaccph);
         probav = min(1.0,aaccpv);
 
-        //******************* The sturcture of my deque list of HR ***********************
+        //******************* The sturcture of my vector list of HR ***********************
         // the Vertical rod is always push in the front
         // the Horizontal rod is always push in the back
         // the index of last vertical rod in the list can be found by index[nv-1]
@@ -459,7 +459,7 @@ void MC::MCRUN()
 }
 
 
-void MC::plot(const deque<HR>& Rodlist)
+void MC::plot(const vector<HR>& Rodlist)
 {
 
     FILE* gnuplot = popen("gnuplot -persistent","w");
@@ -517,7 +517,7 @@ int main()
     double start = clock();
 
     // ======================= Plotting the final config ========================
-    deque<HR> R;
+    vector<HR> R;
     MC m(1E8L,8,120,120,35);
     m.MCRUN();
     R= m.getRodlist();

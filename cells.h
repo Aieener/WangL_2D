@@ -5,8 +5,8 @@
 
 #ifndef CELLS_H
 #define CELLS_H
-#include <deque>
-#include <deque>
+#include <vector>
+#include <vector>
 #include "hardrods.h"
 #include "square.h"
 using namespace std;
@@ -62,21 +62,18 @@ class Cells
 		/*
 		*  @function      neighbors
 		*  @param         Square sq
-		*  @return        deque <Square *>, a deque of pointers to the Squares
+		*  @return        vector <Square *>, a vector of pointers to the Squares
 		*                 in this cells which are neighbors of `sq`
 		*
-		*  Note:  Fill the deque in this order:  North (up one), East (right one),
+		*  Note:  Fill the vector in this order:  North (up one), East (right one),
 		*  South (down one), and West (left one).
 		*
-		*  Note:  If there is NO neighbor in a given direction, the deque will
+		*  Note:  If there is NO neighbor in a given direction, the vector will
 		*  have size < 4.  Corner squares have just two neighbors, and side
 		*  squares have three neihbors.
 		*/
 
-		deque<HR> Initial(int len, int n, double st); // generate a ramdon initial config;
-
-
-		deque <Square *> neighbors(Square sq) const;
+		vector <Square *> neighbors(Square sq) const;
 
 		/*
 		*  @function      toString

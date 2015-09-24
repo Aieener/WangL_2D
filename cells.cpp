@@ -109,19 +109,19 @@ Square& Cells::getSquare(int x, int y) const
 /*
 *  @function      neighbors
 *  @param         Square sq
-*  @return        deque <Square *>, a deque of pointers to the Squares
+*  @return        vector <Square *>, a vector of pointers to the Squares
 *                 in this cells which are neighbors of `sq`
 *
-*  Note:  Fill the deque in this order:  North (up one), East (right one),
+*  Note:  Fill the vector in this order:  North (up one), East (right one),
 *  South (down one), and West (left one).
 *
-*  Note:  If there is NO neighbor in a given direction, the deque will
+*  Note:  If there is NO neighbor in a given direction, the vector will
 *  have size < 4.  Corner squares have just two neighbors, and side
 *  squares have three neihbors.
 */
-deque <Square *> Cells::neighbors(Square sq) const
+vector <Square *> Cells::neighbors(Square sq) const
 {
-	deque<Square *> v1; // declare deque of pointers to the Squares.
+	vector<Square *> v1; // declare vector of pointers to the Squares.
 
 	if (sq.getY() > 0 && sq.getY() < numRows-1)
 	{
@@ -135,7 +135,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * down =  &arr[sq.getY()+1][sq.getX()];
 			Square * left =  &arr[sq.getY()][sq.getX()-1];
 
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(up);
 			v1.push_back(right);
 			v1.push_back(down);
@@ -150,7 +150,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * right = &arr[sq.getY()][sq.getX()+1];
 			Square * down = &arr[sq.getY()+1][sq.getX()];
 
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(up);
 			v1.push_back(right);
 			v1.push_back(down);
@@ -164,7 +164,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * up = &arr[sq.getY()-1][sq.getX()];
 			Square * down = &arr[sq.getY()+1][sq.getX()];
 			Square * left = &arr[sq.getY()][sq.getX()-1];
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(up);
 			v1.push_back(down);
 			v1.push_back(left);
@@ -183,7 +183,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * down = &arr[sq.getY()+1][sq.getX()];
 			Square * left = &arr[sq.getY()][sq.getX()-1];
 
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(right);
 			v1.push_back(down);
 			v1.push_back(left);
@@ -222,7 +222,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * right = &arr[sq.getY()][sq.getX()+1];
 			Square * left = &arr[sq.getY()][sq.getX()-1];
 
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(up);
 			v1.push_back(right);
 			v1.push_back(left);
@@ -246,7 +246,7 @@ deque <Square *> Cells::neighbors(Square sq) const
 			Square * up = &arr[sq.getY()-1][sq.getX()];
 			Square * left = &arr[sq.getY()][sq.getX()-1];
 
-			//push those square pointers to the deque;			
+			//push those square pointers to the vector;			
 			v1.push_back(up);
 			v1.push_back(left);
 
@@ -256,191 +256,6 @@ deque <Square *> Cells::neighbors(Square sq) const
 	return v1;
 }
 
-deque<HR> Cells::Initial(int len, int n, double st)
-{
-	// define an accumulator to indicate # of particles that sit into the cells;
-	int accv = 0;
-	int acch = 0;
-
-	int c = numCols;
-	int r = numRows;
-	deque<HR> RodL;
-
-
-	// make the random initial config;
-	srand(time(0));	
-	// st is chosen between [0,1]
-	// when st == 0; do ver;
-	// when st == 1; do hor;
-	// whtn st == a; do a*ver and (1-a)*hor;
-	while(accv < n*(1-st))
-	{
-		int x,y; // pick a random position and orientation for the HR to be added;
-		x = rand()%c;
-		y = rand()%r;	
-		if(getSquare(x,y).isEmpty()) // if it's open, try to do Addition;
-		{
-			HR rod(x,y,len,0);
-
-			//======================== Vertical inside boundary===============================
-			if(y + len <= r)
-			{
-				// the vertical case
-				int counter = 0;
-
-				for (int j = 0; j < len-1; j++)
-				{
-					// check if the vertical space is wide open
-					if(getSquare(x,y+j+1).isOccupied())
-					{
-						counter++;
-					}
-				}
-				if (counter == 0)
-				{
-					// Do addition;
-					// push the new rod into the Rodlist;
-					RodL.push_front(rod);
-					accv++;
-					// update new N, E and new config;
-					for (int i = 0; i < len; i++)
-					{	
-						getSquare(x,y+i).setStatus(1);
-					}		
-				}						
-			}
-			//========================== Vertical Apply peiodic boundary ===================
-
-			else 
-			{ 
-				// the vertical case apply periodic BC
-				int counter2 = 0;
-				for (int j = 0; j <r-y-1; j++)
-				{
-					// check if the vertical space is wide open
-					if(getSquare(x,y+j+1).isOccupied())
-					{
-						counter2++;
-
-					}
-				}
-				if (counter2 == 0)
-				{
-					for (int i = 0; i < y+len-r; i++)
-					{
-						// check if the vertical space is wide open
-						if(getSquare(x,i).isOccupied())
-						{								
-							counter2++;
-						}
-					}
-				}
-
-				if (counter2 == 0)
-				{
-					// Do addition;
-					// push the new rod into the Rodlist;
-					RodL.push_front(rod);	
-					accv++;
-					
-					for (int j = 0; j <r-y; j++)
-					{
-						getSquare(x,y+j).setStatus(1);
-					}
-					for (int i = 0; i < y+len-r; i++)
-					{
-						getSquare(x,i).setStatus(1);
-					}							
-				}
-			}
-		}
-	}
-
-	while(acch < n*st) 
-	{
-    //======================= Horizontal inside boundary ============================
-		int x,y; // pick a random position and orientation for the HR to be added;
-		x = rand()%c;
-		y = rand()%r;
-		if(getSquare(x,y).isEmpty())
-		{
-			HR rod(x,y,len,1);
-
-			if( x + len <= c)
-			{
-				int counter3 = 0;
-				for (int j = 0; j< len-1 ; j++)
-				{
-					// check if the horizontal space is wide open
-					if(getSquare(x+1+j,y).isOccupied())
-					{
-						counter3++;
-					}							
-				}
-				if (counter3 == 0)
-				{
-					//Do addition;
-					//push the new rod into the Rodlist;
-					RodL.push_back(rod);
-					acch++;
-
-					// update new N, E and new config;
-					for (int i = 0; i < len; i++)
-					{
-						getSquare(x+i,y).setStatus(1);
-					}
-				}
-			}
-			//======================= Horizontal periodic boundary ============================
-
-			else
-			{ 		
-				// the Horizontal case apply periodic BC
-				int counter4 = 0;
-				for (int j = 0; j <c-x-1; j++)
-				{
-					// check if the Horizontal space is wide open
-					if(getSquare(x+j+1,y).isOccupied())
-					{
-						counter4++;
-
-					}
-				}
-				if (counter4 == 0)
-				{
-					for (int i = 0; i < x + len-c; i++)
-					{
-						// check if the Horizontal space is wide open
-						if(getSquare(i,y).isOccupied())
-						{
-							counter4++;
-						}
-					}						
-				}
-
-				if (counter4 == 0)
-				{
-					// Do addition;
-					// push the new rod into the Rodlist;
-					RodL.push_back(rod);	
-					acch++;
-					
-					for (int j = 0; j <c-x; j++)
-					{
-						getSquare(x+j,y).setStatus(1);
-					}
-					for (int i = 0; i < x+len-c; i++)
-					{
-						getSquare(i,y).setStatus(1);
-					}							
-				}
-			}				    												
-		}
-	}
-	cout << acch << endl;
-	cout << accv << endl;
-	return RodL;
-}
 
 string Cells::toString() const
 {
