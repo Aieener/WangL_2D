@@ -295,7 +295,7 @@ array<double,10000>  MC::MCRUN()
 
 		if (i%100000 == 0) // print out result in the terminal
 		{
-			cout <<"g= "<<g<<"  Min = "<<hisvmin<<" Mean = "<< hisvmean <<" # of Ver Rod: "<<nv <<" # of Hor Rod: "<<nh <<  "      WF[0] = "<< WF[0]<<" WF[0.2*size] = "<< WF[0.2*size]<<" WF[0.5*size] = "<< WF[0.5*size]<<"  WF[0.7*size] = "<< WF[0.7*size]<<endl;
+			cout <<"g= "<<g<<"  Min = "<<hisvmin<<" Mean = "<< hisvmean <<" # of Ver Rod: "<<nv <<" # of Hor Rod: "<<nh <<  "      WF[0] = "<< WF[0]<<" WF[0.2*full#] = "<< WF[0.2*0.8*V/K]<<" WF[0.5*full#] = "<< WF[0.5*0.8*V/K]<<"  WF[0.7*full#] = "<< WF[0.7*0.8*V/K]<<endl;
 			// cout <<"g= "<<g<<"  Min = "<<hisvmin<<" Mean = "<< hisvmean <<" # of Ver Rod: "<<nv <<" # of Hor Rod: "<<nh <<  "      WFV[0] = "<< WFV[0]<<" WFV[50] = "<< WFV[50]<<" WFV[70] = "<< WFV[70]<<"  WFV[100] = "<< WFV[100]<<endl;
 		}        	        
 	}
