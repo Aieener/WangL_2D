@@ -1,8 +1,8 @@
 /*
 * S2LG.cpp
-* Simulation of 2-D lattice gas By WangL
+* Simulation of 2-D Rods (one specie algorithm)By WangL
 * Author: Yuding Ai
-* Date: 2015.06.24
+* Date: 2015.09.24
 * *************************** MC implementation ********************************
 * This simulation follows Wang-Laudau sampling.
 * ******************************************************************************
@@ -226,13 +226,14 @@ array<double,10000>  MC::MCRUN()
 	double aaccp,daccp;      // the acceptance probabilities: 
 	double V = double(r*c);    // the total lattice size
 	double K = double(length); //
-    // double WF[400] = {};
     array<double,10000> WF;
     double g = 1;
 		
 	srand(time(NULL));
 	long int i = 0;
 	Histogram histotal(0,0.8*V/K,4); // take 80% of the full range.
+	Histogram histotalacc(0,0.8*V/K,4); // take 80% of the full range.
+
 
 	// int av = 0; 
 	// int ah = 0; // an interger keep track of the times of we reset the histogram
@@ -247,7 +248,7 @@ array<double,10000>  MC::MCRUN()
 		prob = ((double) rand() / (RAND_MAX)); 
 
 		aaccp = (z*V)/((size+1.0)*K)*(exp(WF[int(size+1)] - WF[int(size)]));
-		daccp = (size*K)/(z*(V/2.0))*(exp(WF[int(size-1)] - WF[int(size)]));	
+		daccp = (size*K)/(z*V)*(exp(WF[int(size-1)] - WF[int(size)]));	
 
 		probd = min(1.0,daccp);
 		proba = min(1.0,aaccp);
@@ -279,6 +280,7 @@ array<double,10000>  MC::MCRUN()
 
 		//================================================ load data into histogram ===================================================================//
 		histotal.record(size);
+		histotalacc.record(size);
 	
 		//************************************************ check if the current histogram nv is "flat enough" *********************************************//
 		double hisvmin,hisvmean;
@@ -309,7 +311,7 @@ array<double,10000>  MC::MCRUN()
 	string data2 = sh.str();
 	myfile << data2;
 	myfile.close();
-	histotal.plot(0);
+	histotalacc.plot(0);
 
 	return WF;    	
 }
@@ -350,7 +352,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,64,64,1);
+	MC m(1E8L,8,64,64,14);
 	wf = m.MCRUN();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
