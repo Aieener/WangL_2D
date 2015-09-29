@@ -45,8 +45,8 @@ class MC
 
 
     	// ******** Other Functianality *******//
-        void Add(Cells &s,double &prob,double &proba);
-        void Del(Cells &s,double &prob,double &probd,double &size);
+        void Add(Cells &s,double &prob,double &aaccp,array<double,10000> &WF);
+        void Del(Cells &s,double &prob,double &daccp,double &size,array<double,10000> &WF);
     	array<double,10000>  MCRUN();
 
 

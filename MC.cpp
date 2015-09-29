@@ -83,9 +83,10 @@ double MC::getNv() const
 // 	Rodlist = RodL;
 // }
 
-void MC::Add(Cells &s,double &prob,double &proba)
+void MC::Add(Cells &s,double &prob,double &aaccp,array<double,10000> &WF)
 {
 	int x,y,o; // pick a random position and orientation for the HR to be added;
+	double proba;
 	x = rand()%c;
 	y = rand()%r;
 	o = rand()%2;// change it to 1 for  lattice gas case
@@ -110,6 +111,7 @@ void MC::Add(Cells &s,double &prob,double &proba)
 			}
 			if(counter == 0)
 			{
+				proba = min(1.0,aaccp*(exp(WF[int(nv+1)] - WF[int(nv)])));
 				if(prob <= proba)
 				{					
 					// Do addition;
@@ -140,6 +142,7 @@ void MC::Add(Cells &s,double &prob,double &proba)
 			}
 			if (counter == 0)
 			{
+				proba = min(1.0,aaccp);
 				if(prob <= proba)
 				{
 					//Do addition;
@@ -159,13 +162,10 @@ void MC::Add(Cells &s,double &prob,double &proba)
     }
 }
 
-void MC::Del(Cells &s,double &prob,double &probd,double &size)
+void MC::Del(Cells &s,double &prob,double &daccp,double &size,array<double,10000> &WF)
 {
-	// vector<HR> Rodlist;
-	// Rodlist.clear();
-	// Rodlist.insert( Rodlist.end(), VRodlist.begin(), VRodlist.end());//merge vertical first
-	// Rodlist.insert( Rodlist.end(), HRodlist.begin(), HRodlist.end());//then merge hor
-	//Do Del;
+	double probd;
+
 	if(nv+nh > 0)// make sure there are rod;
 	{
 		int indx; // pick a random index from the Rodlist;
@@ -174,13 +174,14 @@ void MC::Del(Cells &s,double &prob,double &probd,double &size)
 		//remove Rodlist[indx];
 		int x,y;// the position of the target on the cells;
 
-		if(prob <= probd)
+		if (indx < nv) // vertical
 		{
-			if (indx < nv) // vertical
-			{
-				x = VRodlist[indx].getX();
-				y = VRodlist[indx].getY();
+			x = VRodlist[indx].getX();
+			y = VRodlist[indx].getY();
 
+			probd = min(1.0,daccp*(exp(WF[int(nv-1)] - WF[int(nv)])));
+			if(prob <= probd)
+			{
 				// --------------------- it's a vertical rod -----------------------			
 				for(int i = 0; i<VRodlist[indx].getLength(); i++)
 				{
@@ -190,14 +191,19 @@ void MC::Del(Cells &s,double &prob,double &probd,double &size)
 				// remove the target rod from the vector Rodlist;
 				VRodlist.erase(VRodlist.begin() + indx);
 				nv--;// substract the # of ver rod;
-				dv++;
+				dv++;					
 			}
+		}
 
-			else
+		else
+		{
+			x = HRodlist[indx - nv].getX();
+			y = HRodlist[indx - nv].getY();
+
+			probd = min(1.0,daccp);
+			if(prob <= probd)
 			{
-				x = HRodlist[indx - nv].getX();
-				y = HRodlist[indx - nv].getY();
-				// --------------------- it's a Horizontal rod -----------------------
+			// --------------------- it's a Horizontal rod -----------------------
 				for(int i = 0; i<HRodlist[indx-nv].getLength(); i++)
 				{
 					// update the new config of cells
@@ -206,8 +212,9 @@ void MC::Del(Cells &s,double &prob,double &probd,double &size)
 				// remove the target rod from the vector Rodlist;
 				HRodlist.erase(HRodlist.begin() + indx - nv);
 				nh--;// substract the # of hor rod;
-				dh++;				
-			}
+				dh++;
+
+			}				
 		}										
 	}
 }
@@ -221,7 +228,7 @@ array<double,10000>  MC::MCRUN()
 	stringstream sh;
 	sh.precision(20);
 	double addordel;           // the prob to decide either add or del;
-	double probd,proba;      // the acceptance prob of addition and deletion; 
+	// double probd,proba;      // the acceptance prob of addition and deletion; 
 	double prob;               // the prob to decide either accept add/del;
 	double aaccp,daccp;      // the acceptance probabilities: 
 	double V = double(r*c);    // the total lattice size
@@ -247,19 +254,19 @@ array<double,10000>  MC::MCRUN()
 		double size = nv+nh;
 		prob = ((double) rand() / (RAND_MAX)); 
 
-		aaccp = (z*V)/((size+1.0)*K)*(exp(WF[int(size+1)] - WF[int(size)]));
-		daccp = (size*K)/(z*V)*(exp(WF[int(size-1)] - WF[int(size)]));	
+		aaccp = V/((size+1.0)*K);
+		daccp = (size*K)/V;	
 
-		probd = min(1.0,daccp);
-		proba = min(1.0,aaccp);
+		// probd = min(1.0,daccp);
+		// proba = min(1.0,aaccp);
 
         // ===========================Addition ===================================
 		if(addordel == 0) 
 		{
-			if(size <= 0.8*512) // make sure does not go beyond the histogram
+			if(size <= 0.8*V/K) // make sure does not go beyond the histogram
 			{
 				//Do Addition;
-				Add(s,prob,proba);
+				Add(s,prob,aaccp,WF);
 			}
 	        WF[int(size)] -= g;
 
@@ -271,7 +278,7 @@ array<double,10000>  MC::MCRUN()
 			if (size != 0) // make sure there are rods to be del;
 			{
 				//Do deletion;
-				Del(s,prob,probd,size);
+				Del(s,prob,daccp,size,WF);
 	            WF[int(size)] -= g;
 			}			
 		}
@@ -279,8 +286,8 @@ array<double,10000>  MC::MCRUN()
 		// ======================= Record the datas =============================================
 
 		//================================================ load data into histogram ===================================================================//
-		histotal.record(size);
-		histotalacc.record(size);
+		histotal.record(nv);
+		histotalacc.record(nv);
 	
 		//************************************************ check if the current histogram nv is "flat enough" *********************************************//
 		double hisvmin,hisvmean;
@@ -352,7 +359,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,64,64,14);
+	MC m(1E8L,8,128,128,1);
 	wf = m.MCRUN();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
