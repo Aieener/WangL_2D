@@ -254,8 +254,8 @@ array<double,10000>  MC::MCRUN()
 		double size = nv+nh;
 		prob = ((double) rand() / (RAND_MAX)); 
 
-		aaccp = V/((size+1.0)*K);
-		daccp = (size*K)/V;	
+		aaccp = z*V/((size+1.0)*K);
+		daccp = (size*K)/(V*z);	
 
 		// probd = min(1.0,daccp);
 		// proba = min(1.0,aaccp);
@@ -359,7 +359,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,64,64,1);
+	MC m(1E8L,8,64,64,14);
 	wf = m.MCRUN();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
