@@ -268,7 +268,7 @@ array<double,10000>  MC::MCRUN()
 				//Do Addition;
 				Add(s,prob,aaccp,WF);
 			}
-	        WF[int(size)] -= g;
+	        WF[int(nv)] -= g;
 
 		}
 
@@ -279,7 +279,7 @@ array<double,10000>  MC::MCRUN()
 			{
 				//Do deletion;
 				Del(s,prob,daccp,size,WF);
-	            WF[int(size)] -= g;
+	            WF[int(nv)] -= g;
 			}			
 		}
 
@@ -359,7 +359,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,128,128,1);
+	MC m(1E8L,8,64,64,1);
 	wf = m.MCRUN();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
