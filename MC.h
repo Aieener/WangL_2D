@@ -48,6 +48,7 @@ class MC
         void Add(Cells &s,double &prob,double &aaccp,array<double,10000> &WF);
         void Del(Cells &s,double &prob,double &daccp,double &size,array<double,10000> &WF);
     	array<double,10000>  MCRUN();
+        void MCWEIGHT();
 
 
     	void plot(const vector<HR>& VRodlist, const vector<HR>& HRodlist);

@@ -350,17 +350,103 @@ void MC::plot(const vector<HR>& VRodlist, const vector<HR>& HRodlist)
 	myfileh.close();
 }
 
+void MC::MCWEIGHT()
+{
+	Cells s(c,r);
+	double V = double(r*c);    // the total lattice size
+	double K = double(length); //
 
+	stringstream st;
+	array<double,10000> WF;
+	double addordel; // the prob to decide either add or del;
+	double prob; // the prob to decide either accept add/del;
+	double aaccp,daccp; 
+	double Q; // the fraction of hor and ver particle;
+	double tho; // the density 
+	double AD;// addition and deletion fraction
+	double size;
+
+    //================= recording WF ==============
+    ifstream myfilewf ("Weight_function.txt");
+    double record;
+    string number;
+    for ( int w = 0; w<410; w++) // W for 8_64 now, should change for other cases !!
+    {
+    	getline(myfilewf,number);
+    	record = stod(number);
+    	WF[w] = record;
+    	// cout << WF[w]<<endl;
+    }
+    myfilewf.close();
+		
+	srand(time(NULL));
+	long int i = 0;
+	// Histogram his(0, r*c/length, 1); // the histogram of nv
+
+	//================================Start my MC simulation=================================
+	while (i<step)
+	{
+		i++;
+		// generate a random probability to decide either add or del;
+		addordel = rand()%2;
+		size = av+ah-dv-dh;
+
+		aaccp = z*V/((size+1.0)*K);
+		daccp = (size*K)/(V*z);	
+
+		// *****************define the probabilities ***********************************// I HAVE TO CHANGE IT FOR LATTICE GAS CASE!!!
+		prob = ((double) rand() / (RAND_MAX)); 
+		tho = double(length*size)/double(r*c);
+
+        // ===========================Addition ===================================
+		if(addordel == 0) 
+		{
+			if(size < 0.8*V/K -1) // make sure does not go beyond the histogram
+			{
+				//Do Addition;
+				Add(s,prob,aaccp,WF);
+			}
+		}
+
+		// ============================Deletion=============================
+		else
+		{
+			if (size != 0) // make sure there are rods to be del;
+			{
+				//Do deletion;
+				Del(s,prob,daccp,size,WF);
+			}			
+		}
+
+		// ======================= Record the datas =============================================		
+        Q = (nv - nh)/(nh + nv);
+		AD = (av+ah-dv-dh)/(av+ah+dv+dh);
+
+		if (i%(step/10000) == 0)
+		{
+			// his.record(nv);
+			st << i << "         " << Q <<"        "<< nv << "          "<< nh << "         "<< tho << "         "<< AD<< "         "<< endl;
+			cout <<"Process: "<< ((10000*i)/step)/100.00 <<"%"<<"    "<<"SIZE: "<<av+ah-dv-dh<<"    "<<"# of Ver Rod: "<<nv<<"    "<<"# of Hor Rod: "<< nh <<"   "<<"Qis "<<Q <<"   "<<"tho is: "<<tho << endl;
+		}
+	}
+	// Record the data into a txt file
+	ofstream myfile3 ("dataplot.dat");
+	string data = st.str();
+	myfile3 << data;
+	myfile3.close();
+	// his.plot(0);
+}
 
 int main()
 {
 	double start = clock();
 
 	// ======================= MCRUN & Plotting the final config ===============================
-	array<double,10000>  wf;
+	// array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,64,64,13);
-	wf = m.MCRUN();
+	MC m(1E9L,8,64,64,13);
+	// wf = m.MCRUN();
+	m.MCWEIGHT();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
 	cout <<"This simulation takes "<< (double(end-start)/CLOCKS_PER_SEC)<<endl;
