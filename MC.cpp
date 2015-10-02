@@ -231,8 +231,8 @@ array<double,10000>  MC::MCRUN()
 		
 	srand(time(NULL));
 	long int i = 0;
-	Histogram histotal(0,0.8*V/K,4); // take 80% of the full range.
-	Histogram histotalacc(0,0.8*V/K,4); // take 80% of the full range.
+	Histogram histotal(0,1.0*V/K,4); // take 80% of the full range.
+	Histogram histotalacc(0,1.0*V/K,4); // take 80% of the full range.
 
 
 	// int av = 0; 
@@ -256,7 +256,7 @@ array<double,10000>  MC::MCRUN()
         // ===========================Addition ===================================
 		if(addordel == 0) 
 		{
-			if(size <= 0.8*512) // make sure does not go beyond the histogram
+			if(size <= 1.0*V/K) // make sure does not go beyond the histogram
 			{
 				//Do Addition;
 				Add(s,prob,proba);
@@ -352,7 +352,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E8L,8,64,64,14);
+	MC m(1E8L,1,30,30,1);
 	wf = m.MCRUN();
 	// ======================= end of simulation, print out the time =======
 	double end = clock();
