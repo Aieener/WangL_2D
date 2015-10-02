@@ -430,7 +430,7 @@ void MC::MCWEIGHT()
 		}
 	}
 	// Record the data into a txt file
-	ofstream myfile3 ("dataplot.dat");
+	ofstream myfile3 ("dataplot.txt");
 	string data = st.str();
 	myfile3 << data;
 	myfile3.close();
@@ -444,7 +444,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	// array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E9L,8,64,64,13);
+	MC m(1E11L,8,64,64,13);
 	// wf = m.MCRUN();
 	m.MCWEIGHT();
 	// ======================= end of simulation, print out the time =======

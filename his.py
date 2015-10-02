@@ -2,6 +2,7 @@
 #Author: Yuding Ai
 #Date: 2015 July 28
 
+from scipy.stats import norm
 import numpy as np
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ def his():
 	N1 = [] # Ver
 	N2 = [] # Hor
 	N = [] # tot
-	with open("dataplot.dat","r") as file:
+	with open("dataplot.txt","r") as file:
 		for line in file:
 			words = line.split()
 			n1 = float(words[2]) # Ver
@@ -21,7 +22,8 @@ def his():
 			N2.append(n2);
 			N.append(ntot);
 
-
+	# with open("Hisv.txt", "w") as file:
+	# 	file.write('\n'.join(map(str, N1)))
 
 
 	fig1 = plt.figure()
@@ -39,7 +41,12 @@ def his():
 	ax1.set_title("Number Distribution for Vertical Rods")
 	ax1.set_xlabel('Numbers')
 	ax1.set_ylabel('Frequency')
-	ax1.hist(N1,numBins,color = 'blue', alpha = 0.8, label='Vertical Rods')
+	
+	n, bins, patches = ax1.hist(N1,numBins,normed = 1, color = 'blue', alpha = 0.8, label='Vertical Rods')
+	(mu, sigma) = norm.fit(N1)
+	y = mlab.normpdf( bins, mu, sigma)
+	l = ax1.plot(bins, y, 'r--')
+	
 	leg = ax1.legend()
 	leg.get_frame().set_alpha(0.5)
 	title = 'N1_#distribution.png'
@@ -68,8 +75,12 @@ def his():
 	ax5.set_title("Total Number Distribution")
 	ax5.set_xlabel('Numbers')
 	ax5.set_ylabel('Frequency')
-	ax5.hist(N,numBins,color = 'yellow', alpha = 0.8, label = 'Total Rods')
+	n, bins, patches = ax5.hist(N,numBins,normed = 1,color = 'yellow', alpha = 0.8, label = 'Total Rods')
 	# ax5.set_xlim([0, 450])
+	(mu, sigma) = norm.fit(N)
+	y = mlab.normpdf( bins, mu, sigma)
+
+	l = ax5.plot(bins, y, 'r--')
 	leg = ax5.legend()
 	leg.get_frame().set_alpha(0.5)
 	title = 'Ntot_#distribution.png'
