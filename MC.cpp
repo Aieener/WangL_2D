@@ -1,6 +1,9 @@
 /*
-* S2LG.cpp
+* MC.cpp
 * Simulation of 2-D Rods (one specie algorithm)By WangL
+* **** Special experiment branch : weight on Vertical Numbers  *****
+*          NOT WORKING PROPERLY!!!                                 *
+* ******************************************************************
 * Author: Yuding Ai
 * Date: 2015.09.24
 * *************************** MC implementation ********************************
@@ -8,23 +11,7 @@
 * ******************************************************************************
 */
 
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include "square.h"
-#include "cells.h"
 #include "MC.h"
-#include "hardrods.h"
-#include <cstdlib>
-#include <cmath>
-#include <time.h>
-#include <vector>
-#include "histogram.h"
-#include <array>
-using namespace std;
-
 
 MC::MC(long int ST, int LEN,int C, int R, double Z)
 {
@@ -437,19 +424,4 @@ void MC::MCWEIGHT()
 	// his.plot(0);
 }
 
-int main()
-{
-	double start = clock();
-
-	// ======================= MCRUN & Plotting the final config ===============================
-	// array<double,10000>  wf;
-	vector<HR> R;
-	MC m(1E11L,8,64,64,13);
-	// wf = m.MCRUN();
-	m.MCWEIGHT();
-	// ======================= end of simulation, print out the time =======
-	double end = clock();
-	cout <<"This simulation takes "<< (double(end-start)/CLOCKS_PER_SEC)<<endl;
-	return 0;
-}
 
