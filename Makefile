@@ -2,15 +2,17 @@
 # CC = g++ -std=gnu++0x
 CC = g++
 
-CFLAGS = -c -Wall -pedantic -Ofast -march=native -std=gnu++0x
+CFLAGS = -c -Wall -pedantic -Ofast -march=native -std=c++11 
 
-PROG1 = MC
+PROG1 = main
 
 all: runit
 
+runit: $(PROG1).o cells.o square.o hardrods.o histogram.o MC.o 
+		$(CC) $(PROG1).o cells.o square.o hardrods.o histogram.o MC.o -o runit
 
-runit: $(PROG1).o cells.o square.o hardrods.o histogram.o
-		$(CC) $(PROG1).o cells.o square.o hardrods.o histogram.o -o runit
+MC.o: MC.cpp
+		$(CC) $(CFLAGS) MC.cpp
 
 $(PROG1).o: $(PROG1).cpp
 		$(CC) $(CFLAGS) $(PROG1).cpp
@@ -29,3 +31,4 @@ histogram.o: histogram.cpp
 
 clean:
 		rm -rf *o run
+

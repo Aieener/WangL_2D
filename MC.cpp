@@ -9,22 +9,7 @@
 */
 
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include "square.h"
-#include "cells.h"
 #include "MC.h"
-#include "hardrods.h"
-#include <cstdlib>
-#include <cmath>
-#include <time.h>
-#include <vector>
-#include "histogram.h"
-#include <array>
-using namespace std;
-
 
 MC::MC(long int ST, int LEN,int C, int R, double Z)
 {
@@ -231,8 +216,8 @@ array<double,10000>  MC::MCRUN()
 		
 	srand(time(NULL));
 	long int i = 0;
-	Histogram histotal(0,1.0*V/K,4); // take 80% of the full range.
-	Histogram histotalacc(0,1.0*V/K,4); // take 80% of the full range.
+	Histogram histotal(0,0.8*V/K,4); // take 80% of the full range for rods and 100% for lattice gas
+	Histogram histotalacc(0,0.8*V/K,4); // take 80% of the full range for rods and 100% for lattice gas.
 
 
 	// int av = 0; 
@@ -256,7 +241,7 @@ array<double,10000>  MC::MCRUN()
         // ===========================Addition ===================================
 		if(addordel == 0) 
 		{
-			if(size <= 1.0*V/K) // make sure does not go beyond the histogram
+			if(size <= 0.8*V/K) // make sure does not go beyond the histogram
 			{
 				//Do Addition;
 				Add(s,prob,proba);
@@ -301,7 +286,7 @@ array<double,10000>  MC::MCRUN()
 	}
    
 
-	for(int i = 0; i< r*c+1; i++)
+	for(int i = 0; i< 0.8*V/K+1; i++)
 	{
 		sh<<WF[i]<<endl;
 	}
@@ -343,20 +328,4 @@ void MC::plot(const vector<HR>& VRodlist, const vector<HR>& HRodlist)
 	myfileh.close();
 }
 
-
-
-int main()
-{
-	double start = clock();
-
-	// ======================= MCRUN & Plotting the final config ===============================
-	array<double,10000>  wf;
-	vector<HR> R;
-	MC m(1E8L,1,30,30,1);
-	wf = m.MCRUN();
-	// ======================= end of simulation, print out the time =======
-	double end = clock();
-	cout <<"This simulation takes "<< (double(end-start)/CLOCKS_PER_SEC)<<endl;
-	return 0;
-}
 

@@ -1,14 +1,11 @@
 /*
 * hardrods.cpp
-* 2-D lattice gas
-* Author: Yuding Ai & Eelco Empting
+* 2-D Rods
+* Author: Yuding Ai 
 * Date: 2015.06.08
 */
 
 #include "hardrods.h"
-#include <iostream>
-#include <vector>
-#include <string>
 
 HR::HR()
 {
