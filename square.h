@@ -1,5 +1,5 @@
 // square.h
-// 2-D lattice gas
+// 2-D rods
 // Author: Yuding Ai
 // Date: 2015.06.05
 
@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
+using namespace std;
 
 class Square
 {
