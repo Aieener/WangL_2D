@@ -1,5 +1,5 @@
 /*
-* S2LG.cpp
+* MC.cpp
 * Simulation of 2-D Rods (one specie algorithm)By WangL
 * Author: Yuding Ai
 * Date: 2015.09.24
@@ -218,10 +218,6 @@ array<double,10000>  MC::MCRUN()
 	long int i = 0;
 	Histogram histotal(0,0.8*V/K,4); // take 80% of the full range for rods and 100% for lattice gas
 	Histogram histotalacc(0,0.8*V/K,4); // take 80% of the full range for rods and 100% for lattice gas.
-
-
-	// int av = 0; 
-	// int ah = 0; // an interger keep track of the times of we reset the histogram
 
 	// =============================================================Start MC runs ======================================================================== //
 	while (g>=1E-7)

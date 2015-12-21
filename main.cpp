@@ -12,7 +12,7 @@ int main()
 	// ======================= MCRUN & Plotting the final config ===============================
 	array<double,10000>  wf;
 	vector<HR> R;
-	MC m(1E11L,8,64,64,13);
+	MC m(1E11L,1,10,10,1);
 	wf = m.MCRUN();
 	// m.MCWEIGHT();
 	// ======================= end of simulation, print out the time =======

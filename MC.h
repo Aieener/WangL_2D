@@ -40,9 +40,6 @@ class MC
     	double getDaccp() const;
         double getNh() const;
         double getNv() const;
-        // ******** Setters ******//
-        // void setRodlist(std::vector<HR> RodL);
-
 
 
     	// ******** Other Functianality *******//
