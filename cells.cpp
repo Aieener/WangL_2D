@@ -37,10 +37,9 @@ Cells::Cells(int X, int Y)
 */
 Cells::~Cells()
 {   
-	if(arr)
-	{
-		delete [] arr;
-	}
+
+	delete [] arr;
+	
 }
 
 // *** Getters *** //
